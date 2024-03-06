@@ -7,7 +7,7 @@
   "homepage": "https://github.com/LLK/scratch-vm#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/LLK/scratch-vm.git",
+    "url": "https://github.com/Spacewalker215/scratch-vm",
     "sha": "a9487a9a8b35ee6cbcbf3f43fcc7a6ee71e09157"
   },
   "main": "./dist/node/scratch-vm.js",
