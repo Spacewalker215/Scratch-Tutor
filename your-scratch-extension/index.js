@@ -1,9 +1,12 @@
+import "regenerator-runtime/runtime";
+
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
 const axios = require('axios');
 const apiKey = process.env.API_KEY;
 const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+
 
 let bill;
 
