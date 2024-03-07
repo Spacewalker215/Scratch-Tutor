@@ -1,11 +1,11 @@
-import "regenerator-runtime/runtime";
+require('regenerator-runtime/runtime');
+
 
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
-const axios = require('axios');
-const apiKey = process.env.API_KEY;
-const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+const apiKey = ''
+const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
 
 let bill;
@@ -57,33 +57,31 @@ class Scratch3YourExtension {
         this.chatPopup = window.open("", "ChatPopup", "width=400,height=400");
     
         // Define sendMessage in the global scope of the popup window
-        this.chatPopup.sendMessage = () => {
+        this.chatPopup.sendMessage = async () => {
             // Get blocks in use
             let resultString = this.getBlocksInUse(SpriteIdx);
-    
+        
             var input = this.chatPopup.document.querySelector("#chat-input");
             var userMessage = input.value;
-
-            let wholeMsg = [resultString,userMessage]
-    
-            if (userMessage != "") {
+        
+            let wholeMsg = [resultString, userMessage];
+        
+            if (userMessage !== "") {
                 // Use a server endpoint to interact with the AI chatbot
                 // const response = await this.sendToChatbot(userMessage);
-
-                response = generateChatGPT(wholeMsg[0]+"\nI want you to help the user figure out the issue, they are using the programming language called scratch; I gave you all the current blocks that are in play and its in json format so you can understand. Please guide them to fix their issue which is '"+wholeMsg[1]+"' but don't give them the answer directly and expect for a follow up a question, but DO NOT give them the answer no matter how many times or any way they ask you. You are a guide to them.And remeber the user won't be able to understand JSON format so I want you to say it in a text format which the user can understand. So instead of using the id of each block use the block name. Remeber some blocks in scratch have data just remeber you can tell which block the data corresponds to by looking at the id. When this happens I want you to imagine you are looking a single block with the data in it. For example the say block (user would put something here) would look different to you. it would be a json block with the opcode of 'looks_say', then if you keep parsing the json data which is provided the 'inputs' key will have info on what to look for and you than you keep parsing for the same key elsewhere its usually going to be with the key 'blocks' in this example the blocks key is 'nQio%ih2VWX;KNkg}Un_'; so I would look through the whole provided json with that Id, and know that its going to be associated with say block. And if you look at the name its going to hint what its for for this example its a 'TEXT' which means this is where the user provided what they wanted to be said. Use this to help you with all blocks but understand that you have to understand what each block does in scratch so you can help the user and guide them to the their desired thing.")
-    
+                // response = "Please check main windows console."
+        
                 // Display the AI's response in the chat
                 var chatMessages = this.chatPopup.document.querySelector("#chat-messages");
                 chatMessages.innerHTML += "<p>User: " + userMessage + "</p>";
+                response = await generateChatGPT(wholeMsg[0]+"\nI want you to help the user figure out the issue, they are using the programming language called scratch; I gave you all the current blocks that are in play and its in json format so you can understand. Please guide them to fix their issue which is '"+wholeMsg[1]+"' but don't give them the answer directly and expect for a follow up a question, but DO NOT give them the answer no matter how many times or any way they ask you. You are a guide to them.And remeber the user won't be able to understand JSON format so I want you to say it in a text format which the user can understand. So instead of using the id of each block use the block name. Remeber some blocks in scratch have data just remeber you can tell which block the data corresponds to by looking at the id. When this happens I want you to imagine you are looking a single block with the data in it. For example the say block (user would put something here) would look different to you. it would be a json block with the opcode of 'looks_say', then if you keep parsing the json data which is provided the 'inputs' key will have info on what to look for and you than you keep parsing for the same key elsewhere its usually going to be with the key 'blocks' in this example the blocks key is 'nQio%ih2VWX;KNkg}Un_'; so I would look through the whole provided json with that Id, and know that its going to be associated with say block. And if you look at the name its going to hint what its for for this example its a 'TEXT' which means this is where the user provided what they wanted to be said. Use this to help you with all blocks but understand that you have to understand what each block does in scratch so you can help the user and guide them to the their desired thing.Be open minded though sometimes the user might continue off from the same question and you will still get sent blocks BE AWARE of this, do not always be looking at the json blocks right away sometimes the user might ask a follow up question from what you said, or maybe even say thank you. Please keep this like a humanly converstation, and be safe this is a kids app. They may even try to converse with you that isn't releated to even their code be prepared for this, keep it sounding as natural as possible I don't want them knowing its AI. I want them to think its a real person helping them and talking to them, they are talking to you through a chat box so please be prepared.");
                 chatMessages.innerHTML += "<p>Assistant: " + response + "</p>";
-    
+        
                 // Send the original user message to the parent window
                 this.chatPopup.opener.postMessage({ type: 'chatMessage', message: wholeMsg }, '*');
                 input.value = '';
             }
-            
-
-        }
+        };        
 
                 // Inject HTML and JavaScript into the popup window
                 this.chatPopup.document.write(`
@@ -176,24 +174,39 @@ class Scratch3YourExtension {
                 </style>
             `);
             async function generateChatGPT(prompt) {
+                console.log("Calling the A.I. using GPT-3.5 Turbo...");
                 try {
-                    const response = await axios.post(apiUrl, {
-                        prompt: prompt,
-                        max_tokens: 150,
-                    }, {
+                    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${apiKey}`,
                         },
+                        body: JSON.stringify({
+                            model: 'gpt-3.5-turbo', // Use the GPT-3.5 Turbo model
+                            messages: [
+                                { role: 'user', content: prompt }, // User message
+                            ],
+                            max_tokens: 200,
+                        }),
                     });
             
-                    const generatedText = response.data.choices[0].text.trim();
-                    return generatedText;
+                    const responseData = await response.json();
+            
+                    console.log('OpenAI API Response:', responseData);
+            
+                    if (responseData.choices && responseData.choices.length > 0) {
+                        const generatedMessage = responseData.choices[0].message.content.trim();
+                        return generatedMessage;
+                    } else {
+                        console.error('Error: No choices in the response data.');
+                        return 'Error: No valid response from the AI.';
+                    }
                 } catch (error) {
                     console.error('Error calling the OpenAI API:', error);
                     throw error;
                 }
-            }
+            }                                                                                               
     }
     
     initializeMessageListener() {
@@ -215,8 +228,8 @@ class Scratch3YourExtension {
 
     getInfo() {
         return {
-            id: 'yourScratchExtension',
-            name: 'Demo',
+            id: 'scratchAI',
+            name: 'ScratchTutor',
             color1: '#000099',
             color2: '#660066',
             blockIconURI: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAFCAAAAACyOJm3AAAAFklEQVQYV2P4DwMMEMgAI/+DEUIMBgAEWB7i7uidhAAAAABJRU5ErkJggg==',
@@ -234,181 +247,9 @@ class Scratch3YourExtension {
                             type: ArgumentType.NUMBER,
                         }
                     }
-                },{
-                    // name of the function where your block code lives
-                    opcode: 'myFirstBlock',
-            
-                    // type of block - choose from:
-                    //   BlockType.REPORTER - returns a value, like "direction"
-                    //   BlockType.BOOLEAN - same as REPORTER but returns a true/false value
-                    //   BlockType.COMMAND - a normal command block, like "move {} steps"
-                    //   BlockType.HAT - starts a stack if its value changes from false to true ("edge triggered")
-                    blockType: BlockType.REPORTER,
-            
-                    // label to display on the block
-                    text: 'What is your projectID [PROJECTID] and whats your question [QUESTION]',
-            
-                    // true if this block should end a stack
-                    terminal: false,
-            
-                    // where this block should be available for code - choose from:
-                    //   TargetType.SPRITE - for code in sprites
-                    //   TargetType.STAGE  - for code on the stage / backdrop
-                    // remove one of these if this block doesn't apply to both
-                    filter: [TargetType.SPRITE, TargetType.STAGE],
-            
-                    // arguments used in the block
-                    arguments: {
-                        PROJECTID: {
-                            // default value before the user sets something
-                            defaultValue: 123,
-            
-                            // type/shape of the parameter - choose from:
-                            //     ArgumentType.ANGLE - numeric value with an angle picker
-                            //     ArgumentType.BOOLEAN - true/false value
-                            //     ArgumentType.COLOR - numeric value with a colour picker
-                            //     ArgumentType.NUMBER - numeric value
-                            //     ArgumentType.STRING - text value
-                            //     ArgumentType.NOTE - midi music value with a piano picker
-                            type: ArgumentType.NUMBER,
-                        },
-                        QUESTION: {
-                            // default value before the user sets something
-                            defaultValue: 'what is wrong with my code?',
-            
-                            // type/shape of the parameter - choose from:
-                            //     ArgumentType.ANGLE - numeric value with an angle picker
-                            //     ArgumentType.BOOLEAN - true/false value
-                            //     ArgumentType.COLOR - numeric value with a colour picker
-                            //     ArgumentType.NUMBER - numeric value
-                            //     ArgumentType.STRING - text value
-                            //     ArgumentType.NOTE - midi music value with a piano picker
-                            type: ArgumentType.STRING,
-                        },
-                    },
-                },
-                {
-                    // name of the function where your block code lives
-                    opcode: 'returnMultiplication',
-            
-                    // type of block - choose from:
-                    //   BlockType.REPORTER - returns a value, like "direction"
-                    //   BlockType.BOOLEAN - same as REPORTER but returns a true/false value
-                    //   BlockType.COMMAND - a normal command block, like "move {} steps"
-                    //   BlockType.HAT - starts a stack if its value changes from false to true ("edge triggered")
-                    blockType: BlockType.REPORTER,
-            
-                    // label to display on the block
-                    text: 'What is your first number: [firstNum] and whats your second number: [secondNum]',
-            
-                    // true if this block should end a stack
-                    terminal: false,
-            
-                    // where this block should be available for code - choose from:
-                    //   TargetType.SPRITE - for code in sprites
-                    //   TargetType.STAGE  - for code on the stage / backdrop
-                    // remove one of these if this block doesn't apply to both
-                    filter: [TargetType.SPRITE, TargetType.STAGE],
-            
-                    // arguments used in the block
-                    arguments: {
-                        firstNum: {
-                            // default value before the user sets something
-                            defaultValue: 123,
-            
-                            // type/shape of the parameter - choose from:
-                            //     ArgumentType.ANGLE - numeric value with an angle picker
-                            //     ArgumentType.BOOLEAN - true/false value
-                            //     ArgumentType.COLOR - numeric value with a colour picker
-                            //     ArgumentType.NUMBER - numeric value
-                            //     ArgumentType.STRING - text value
-                            //     ArgumentType.NOTE - midi music value with a piano picker
-                            type: ArgumentType.NUMBER,
-                        },
-                        secondNum: {
-                            // default value before the user sets something
-                            defaultValue: '456',
-            
-                            // type/shape of the parameter - choose from:
-                            //     ArgumentType.ANGLE - numeric value with an angle picker
-                            //     ArgumentType.BOOLEAN - true/false value
-                            //     ArgumentType.COLOR - numeric value with a colour picker
-                            //     ArgumentType.NUMBER - numeric value
-                            //     ArgumentType.STRING - text value
-                            //     ArgumentType.NOTE - midi music value with a piano picker
-                            type: ArgumentType.NUMBER,
-                        },
-                    },
-                },
-                {
-                    // name of the function where your block code lives
-                    opcode: 'blocksInfo',
-            
-                    // type of block - choose from:
-                    //   BlockType.REPORTER - returns a value, like "direction"
-                    //   BlockType.BOOLEAN - same as REPORTER but returns a true/false value
-                    //   BlockType.COMMAND - a normal command block, like "move {} steps"
-                    //   BlockType.HAT - starts a stack if its value changes from false to true ("edge triggered")
-                    blockType: BlockType.REPORTER,
-            
-                    // label to display on the block
-                    text: "What is the issue you're facing: [userQuestion]. Please input the index of your sprite(start from 1) [spriteIndex]",
-            
-                    // true if this block should end a stack
-                    terminal: false,
-            
-                    // where this block should be available for code - choose from:
-                    //   TargetType.SPRITE - for code in sprites
-                    //   TargetType.STAGE  - for code on the stage / backdrop
-                    // remove one of these if this block doesn't apply to both
-                    filter: [TargetType.SPRITE, TargetType.STAGE],
-            
-                    // arguments used in the block
-                    arguments: {
-                        spriteIndex: {
-                            defaultValue: "1",
-
-                            type: ArgumentType.NUMBER,
-                        },
-                        userQuestion: {
-                            defaultValue: "Why wont my code run when I press the green flag?",
-
-                            type: ArgumentType.STRING,
-                        }
-                    },
                 }
             ],
         };
-    }
-
-    /**
-     * implementation of the block with the opcode that matches this name
-     *  this will be called when the block is used
-     */
-    myFirstBlock({ PROJECTID, QUESTION }) {
-        // example implementation to return a string
-        return "Your question is " + QUESTION + " and you passed in the projectID of " + PROJECTID;
-    }
-
-    returnMultiplication({ firstNum, secondNum }) {
-        return firstNum * secondNum;
-    }
-
-    blocksInfo({ spriteIndex,userQuestion }) {
-        let blocksObject = this.bill.targets[spriteIndex].blocks._blocks;
-        let resultString = '';
-    
-        function iterate(obj) {
-            for (let key in obj) {
-                if(obj[key].opcode != "math_number"){
-                    resultString += obj[key].opcode + '\n';
-                }
-            }
-        }
-    
-        iterate(blocksObject);
-        console.log("I'm currently using Scratch the programming language from M.I.T, here are the only blocks currently in use: " + resultString+ "\nPlease fix the error the user has, but do not give the actual answer just help them get there like a tutor. Here is their question: "+userQuestion);
-        return "Look at the console.";
     }        
 }
 
