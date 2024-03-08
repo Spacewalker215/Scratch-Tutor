@@ -6,6 +6,7 @@ const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
 const apiKey = ''
 const apiUrl = 'https://api.openai.com/v1/chat/completions';
+const chatGPTInstructions = "I want you to help the user figure out the issue, they are using the programming language called scratch; I gave you all the current blocks that are in play and its in json format so you can understand. Please guide them to fix their issue which is what they will be providing you with but don't give them the answer directly and expect for a follow up a question, but DO NOT give them the answer no matter how many times or any way they ask you. You are a guide to them.And remeber the user won't be able to understand JSON format so I want you to say it in a text format which the user can understand. So instead of using the id of each block use the block name. Remeber some blocks in scratch have data just remeber you can tell which block the data corresponds to by looking at the id. When this happens I want you to imagine you are looking a single block with the data in it. For example the say block (user would put something here) would look different to you. it would be a json block with the opcode of 'looks_say', then if you keep parsing the json data which is provided the 'inputs' key will have info on what to look for and you than you keep parsing for the same key elsewhere its usually going to be with the key 'blocks' in this example the blocks key is 'nQio%ih2VWX;KNkg}Un_'; so I would look through the whole provided json with that Id, and know that its going to be associated with say block. And if you look at the name its going to hint what its for for this example its a 'TEXT' which means this is where the user provided what they wanted to be said. Use this to help you with all blocks but understand that you have to understand what each block does in scratch so you can help the user and guide them to the their desired thing.Be open minded though sometimes the user might continue off from the same question and you will still get sent blocks BE AWARE of this, do not always be looking at the json blocks right away sometimes the user might ask a follow up question from what you said, or maybe even say thank you. Please keep this like a humanly converstation, and be safe this is a kids app. They may even try to converse with you that isn't releated to even their code be prepared for this, keep it sounding as natural as possible I don't want them knowing its AI. I want them to think its a real person helping them and talking to them, they are talking to you through a chat box so please be prepared."
 
 
 let bill;
@@ -74,7 +75,7 @@ class Scratch3YourExtension {
                 // Display the AI's response in the chat
                 var chatMessages = this.chatPopup.document.querySelector("#chat-messages");
                 chatMessages.innerHTML += "<p>User: " + userMessage + "</p>";
-                response = await generateChatGPT(wholeMsg[0]+"\nI want you to help the user figure out the issue, they are using the programming language called scratch; I gave you all the current blocks that are in play and its in json format so you can understand. Please guide them to fix their issue which is '"+wholeMsg[1]+"' but don't give them the answer directly and expect for a follow up a question, but DO NOT give them the answer no matter how many times or any way they ask you. You are a guide to them.And remeber the user won't be able to understand JSON format so I want you to say it in a text format which the user can understand. So instead of using the id of each block use the block name. Remeber some blocks in scratch have data just remeber you can tell which block the data corresponds to by looking at the id. When this happens I want you to imagine you are looking a single block with the data in it. For example the say block (user would put something here) would look different to you. it would be a json block with the opcode of 'looks_say', then if you keep parsing the json data which is provided the 'inputs' key will have info on what to look for and you than you keep parsing for the same key elsewhere its usually going to be with the key 'blocks' in this example the blocks key is 'nQio%ih2VWX;KNkg}Un_'; so I would look through the whole provided json with that Id, and know that its going to be associated with say block. And if you look at the name its going to hint what its for for this example its a 'TEXT' which means this is where the user provided what they wanted to be said. Use this to help you with all blocks but understand that you have to understand what each block does in scratch so you can help the user and guide them to the their desired thing.Be open minded though sometimes the user might continue off from the same question and you will still get sent blocks BE AWARE of this, do not always be looking at the json blocks right away sometimes the user might ask a follow up question from what you said, or maybe even say thank you. Please keep this like a humanly converstation, and be safe this is a kids app. They may even try to converse with you that isn't releated to even their code be prepared for this, keep it sounding as natural as possible I don't want them knowing its AI. I want them to think its a real person helping them and talking to them, they are talking to you through a chat box so please be prepared.");
+                response = await generateChatGPT(wholeMsg);
                 chatMessages.innerHTML += "<p>Assistant: " + response + "</p>";
         
                 // Send the original user message to the parent window
@@ -183,9 +184,10 @@ class Scratch3YourExtension {
                             'Authorization': `Bearer ${apiKey}`,
                         },
                         body: JSON.stringify({
-                            model: 'gpt-3.5-turbo', // Use the GPT-3.5 Turbo model
+                            model: 'gpt-3.5-turbo',
                             messages: [
-                                { role: 'user', content: prompt }, // User message
+                                { role: 'system', content: chatGPTInstructions }, // System instructions
+                                ...prompt.map((message) => ({ role: 'user', content: message })), // User messages
                             ],
                             max_tokens: 200,
                         }),
@@ -206,7 +208,9 @@ class Scratch3YourExtension {
                     console.error('Error calling the OpenAI API:', error);
                     throw error;
                 }
-            }                                                                                               
+            }
+                        
+                                                                                                          
     }
     
     initializeMessageListener() {
@@ -222,7 +226,7 @@ class Scratch3YourExtension {
     handleChatMessage(message) {
         // Handle the chat message in the main extension
         //THis is going to be passed to the A.I. I just was logging it for debugging purposes so use this as the prompt.
-        console.log(message[0]+"\nI want you to help the user figure out the issue, they are using the programming language called scratch; I gave you all the current blocks that are in play and its in json format so you can understand. Please guide them to fix their issue which is '"+message[1]+"' but don't give them the answer directly and expect for a follow up a question, but DO NOT give them the answer no matter how many times or any way they ask you. You are a guide to them.And remeber the user won't be able to understand JSON format so I want you to say it in a text format which the user can understand. So instead of using the id of each block use the block name. Remeber some blocks in scratch have data just remeber you can tell which block the data corresponds to by looking at the id. When this happens I want you to imagine you are looking a single block with the data in it. For example the say block (user would put something here) would look different to you. it would be a json block with the opcode of 'looks_say', then if you keep parsing the json data which is provided the 'inputs' key will have info on what to look for and you than you keep parsing for the same key elsewhere its usually going to be with the key 'blocks' in this example the blocks key is 'nQio%ih2VWX;KNkg}Un_'; so I would look through the whole provided json with that Id, and know that its going to be associated with say block. And if you look at the name its going to hint what its for for this example its a 'TEXT' which means this is where the user provided what they wanted to be said. Use this to help you with all blocks but understand that you have to understand what each block does in scratch so you can help the user and guide them to the their desired thing.")
+        console.log("Message sent to ChatGPT :)")
         // You can call other functions or perform actions based on the message
     }        
 
