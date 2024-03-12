@@ -1,6 +1,5 @@
 require('regenerator-runtime/runtime');
-
-
+const fetch = require('node-fetch')
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
@@ -22,6 +21,8 @@ class Scratch3YourExtension {
     
     getBlocksInUse(SpriteIdx) {
         let blocksObject = this.bill.targets[SpriteIdx].blocks._blocks;
+
+        console.log("Blocks Object",blocksObject)
 
         // Extract information about all blocks
         let allBlocksInfo = Object.values(blocksObject).map(block => {
@@ -62,22 +63,16 @@ class Scratch3YourExtension {
             // Get blocks in use
             let resultString = this.getBlocksInUse(SpriteIdx);
         
-            var input = this.chatPopup.document.querySelector("#chat-input");
-            var userMessage = input.value;
+            let input = this.chatPopup.document.querySelector("#chat-input");
+            let userMessage = input.value;
         
             let wholeMsg = [resultString, userMessage];
         
             if (userMessage !== "") {
-                // Use a server endpoint to interact with the AI chatbot
-                // const response = await this.sendToChatbot(userMessage);
-                // response = "Please check main windows console."
-        
-                // Display the AI's response in the chat
-                var chatMessages = this.chatPopup.document.querySelector("#chat-messages");
+                let chatMessages = this.chatPopup.document.querySelector("#chat-messages");
                 chatMessages.innerHTML += "<p>User: " + userMessage + "</p>";
                 response = await generateChatGPT(wholeMsg);
                 chatMessages.innerHTML += "<p>Assistant: " + response + "</p>";
-        
                 // Send the original user message to the parent window
                 this.chatPopup.opener.postMessage({ type: 'chatMessage', message: wholeMsg }, '*');
                 input.value = '';
@@ -177,7 +172,7 @@ class Scratch3YourExtension {
             async function generateChatGPT(prompt) {
                 console.log("Calling the A.I. using GPT-3.5 Turbo...");
                 try {
-                    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    const response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -208,9 +203,7 @@ class Scratch3YourExtension {
                     console.error('Error calling the OpenAI API:', error);
                     throw error;
                 }
-            }
-                        
-                                                                                                          
+            }                                                                                             
     }
     
     initializeMessageListener() {
@@ -224,10 +217,9 @@ class Scratch3YourExtension {
 
     
     handleChatMessage(message) {
-        // Handle the chat message in the main extension
-        //THis is going to be passed to the A.I. I just was logging it for debugging purposes so use this as the prompt.
-        console.log("Message sent to ChatGPT :)")
-        // You can call other functions or perform actions based on the message
+        // These two lines are for debugging purposes
+        console.log("Message sent to ChatGPT :)\n")
+        console.log(message[0],message[1])
     }        
 
     getInfo() {
