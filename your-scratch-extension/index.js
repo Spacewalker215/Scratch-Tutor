@@ -6,8 +6,6 @@ const TargetType = require('../../extension-support/target-type');
 const apiKey = ''
 const apiUrl = 'https://api.openai.com/v1/chat/completions';
 const chatGPTInstructions = "I want you to help the user figure out the issue, they are using the programming language called scratch; I gave you all the current blocks that are in play and its in json format so you can understand. Please guide them to fix their issue which is what they will be providing you with but don't give them the answer directly and expect for a follow up a question, but DO NOT give them the answer no matter how many times or any way they ask you. You are a guide to them.And remeber the user won't be able to understand JSON format so I want you to say it in a text format which the user can understand. So instead of using the id of each block use the block name. Remeber some blocks in scratch have data just remeber you can tell which block the data corresponds to by looking at the id. When this happens I want you to imagine you are looking a single block with the data in it. For example the say block (user would put something here) would look different to you. it would be a json block with the opcode of 'looks_say', then if you keep parsing the json data which is provided the 'inputs' key will have info on what to look for and you than you keep parsing for the same key elsewhere its usually going to be with the key 'blocks' in this example the blocks key is 'nQio%ih2VWX;KNkg}Un_'; so I would look through the whole provided json with that Id, and know that its going to be associated with say block. And if you look at the name its going to hint what its for for this example its a 'TEXT' which means this is where the user provided what they wanted to be said. Use this to help you with all blocks but understand that you have to understand what each block does in scratch so you can help the user and guide them to the their desired thing.Be open minded though sometimes the user might continue off from the same question and you will still get sent blocks BE AWARE of this, do not always be looking at the json blocks right away sometimes the user might ask a follow up question from what you said, or maybe even say thank you. Please keep this like a humanly converstation, and be safe this is a kids app. They may even try to converse with you that isn't releated to even their code be prepared for this, keep it sounding as natural as possible I don't want them knowing its AI. I want them to think its a real person helping them and talking to them, they are talking to you through a chat box so please be prepared."
-
-
 let bill;
 
 class Scratch3YourExtension {
@@ -72,7 +70,7 @@ class Scratch3YourExtension {
                 let chatMessages = this.chatPopup.document.querySelector("#chat-messages");
                 chatMessages.innerHTML += "<p>User: " + userMessage + "</p>";
                 // testing if the apikey variable is set to something besides blank
-                if(this.apiKey != ''){
+                if(this.apiKey != ' '){
                     response = await generateChatGPT(wholeMsg);
                 }
                 response = "A.I would Help you here"
@@ -94,6 +92,26 @@ class Scratch3YourExtension {
                                 background-color: #f4f4f4;
                                 margin: 0;
                                 padding: 0;
+                            }
+
+                            .chat-bubble {
+                                padding: 8px;
+                                margin: 5px 0;
+                                border-radius: 10px;
+                                max-width: 70%;
+                                word-wrap: break-word;
+                            }
+        
+                            .user {
+                                background-color: #4CAF50;
+                                color: #fff;
+                                align-self: flex-start;
+                            }
+        
+                            .assistant {
+                                background-color: #ddd;
+                                color: #333;
+                                align-self: flex-end;
                             }
 
                             #chat-container {
@@ -129,13 +147,44 @@ class Scratch3YourExtension {
                                 border-radius: 3px;
                                 cursor: pointer;
                             }
+
+                            nav {
+                                display: flex;
+                                justify-content: space-around;
+                                background-color: #f4f4f4;
+                                padding: 10px;
+                                border-bottom: 2px solid #ddd;
+                            }
+                
+                            button {
+                                background-color: transparent;
+                                border: none;
+                                cursor: pointer;
+                                font-size: 16px;
+                                padding: 5px;
+                            }
+                
+                            /* Style for the iframe */
+                            #scratchblocks {
+                                width: 100%;
+                                height: 500px;
+                                border: none;
+                            }
                         </style>
                     </head>
                     <body>
-                        <div id="chat-container">
+                        <nav>
+                            <button onclick="showChat()">A.I Chat</button>
+                            <button onclick="showScratchblocks()">Scratch Block Translator</button>
+                        </nav>
+                        <div id="chat-container" hidden>
                             <div id="chat-messages"></div>
                             <input type="text" id="chat-input" />
                             <button id="send-button" onclick="window.sendMessage()">Send</button>
+                        </div>
+
+                        <div id="scratchblocks-container" hidden>
+                            <iframe src="https://scratchblocks.github.io" style="width:100%; height:100vh; border:none;"></iframe>
                         </div>
 
                         <script>
@@ -145,33 +194,22 @@ class Scratch3YourExtension {
                                 window.sendMessage();
                             }
                         });
+                        // Function to show and hide chat and scratchblocks
+                        function showChat() {
+                            document.getElementById("chat-container").hidden = false;
+                            document.getElementById("scratchblocks-container").hidden = true;
+                        }
+
+                        function showScratchblocks() {
+                            document.getElementById("scratchblocks-container").hidden = false;
+                            document.getElementById("chat-container").hidden = true;
+                        }
+
+                        // Show the chat tab by default
+                        window.onload = showChat;
                         </script>
                     </body>
                 </html>
-            `);
-
-            this.chatPopup.document.write(`
-                <style>
-                    .chat-bubble {
-                        padding: 8px;
-                        margin: 5px 0;
-                        border-radius: 10px;
-                        max-width: 70%;
-                        word-wrap: break-word;
-                    }
-
-                    .user {
-                        background-color: #4CAF50;
-                        color: #fff;
-                        align-self: flex-start;
-                    }
-
-                    .assistant {
-                        background-color: #ddd;
-                        color: #333;
-                        align-self: flex-end;
-                    }
-                </style>
             `);
             async function generateChatGPT(prompt) {
                 console.log("Calling the A.I. using GPT-3.5 Turbo...");
@@ -229,7 +267,7 @@ class Scratch3YourExtension {
     getInfo() {
         return {
             id: 'scratchAI',
-            name: 'ScratchTutor',
+            name: 'Scratch Tutor',
             color1: '#000099',
             color2: '#660066',
             blockIconURI: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAQ4AQMAAADSHVMAAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAGUExURe1LK+5LK0vgYtAAAAABdFJOU/4a4wd9AAAED0lEQVR42u3PQQ0AAAgEIDf7V1ZfpjhoQG2WKWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYeHccIj+8AGdU9s1O0HsQgAAAABJRU5ErkJggg==',
