@@ -10,17 +10,23 @@ let bill;
 
 class Scratch3YourExtension {
     constructor(runtime) {
-        console.log("Runtime in constructor:", runtime);
-        // Call the initialization function
         this.bill = runtime;
         this.chatPopup = null;
         this.initializeMessageListener();
     }
     
     getBlocksInUse(SpriteIdx) {
+        console.log(this.bill);
         let blocksObject = this.bill.targets[SpriteIdx].blocks._blocks;
 
-        console.log("Blocks Object",blocksObject)
+        let allBlocksObject = this.bill.targets
+
+        // loop through all the targets in the all blocks object starting at target 1
+        for (var i=1; i < allBlocksObject.length; i++) {
+            var currentTarget = allBlocksObject[i];
+            if (!currentTarget || !currentTarget.isStage && currentTarget.sprite.name !== "ChatBot") continue;
+
+
 
         // Extract information about all blocks
         let allBlocksInfo = Object.values(blocksObject).map(block => {
@@ -53,6 +59,8 @@ class Scratch3YourExtension {
     }
     
     openChatPopup({SpriteIdx}) {
+        //If SpriteIdx is null than set it to 1
+        SpriteIdx = 1
         // Create a new popup window
         this.chatPopup = window.open("", "ChatPopup", "width=400,height=400");
     
@@ -250,6 +258,7 @@ class Scratch3YourExtension {
     
     initializeMessageListener() {
         // Listen for messages from the popup window
+        this.openChatPopup(1)
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'chatMessage') {
                 this.handleChatMessage(event.data.message);
@@ -271,7 +280,7 @@ class Scratch3YourExtension {
             color1: '#000099',
             color2: '#660066',
             blockIconURI: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAQ4AQMAAADSHVMAAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAGUExURe1LK+5LK0vgYtAAAAABdFJOU/4a4wd9AAAED0lEQVR42u3PQQ0AAAgEIDf7V1ZfpjhoQG2WKWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYeHccIj+8AGdU9s1O0HsQgAAAABJRU5ErkJggg==',
-            menuIconURI: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAFCAAAAACyOJm3AAAAFklEQVQYV2P4DwMMEMgAI/+DEUIMBgAEWB7i7uidhAAAAABJRU5ErkJggg==',
+            menuIconURI: 'data:image/png;base64,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',
             blocks: [
                 {
                     opcode: 'openChatPopup',
