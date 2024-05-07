@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
-const apiKey = process.env.API_KEY;
+const apiKey = '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';
 const longString = `
 I want you to help the user figure out the issue, they are using the programming language called scratch; 
 I gave you all the current blocks that are in play and its in json format so you can understand. 
