@@ -1,10 +1,12 @@
 require('regenerator-runtime/runtime');
-const fetch = require('node-fetch')
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
-const apiKey = '';
-const longString = `
+
+class Scratch3YourExtension {
+    constructor(runtime) {
+        //prompt
+        const thePrompt = `
 I want you to help the user figure out the issue, they are using the programming language called scratch; 
 I gave you all the current blocks that are in play and its in json format so you can understand. 
 Please guide them to fix their issue which is what they will be providing you with but don't give them 
@@ -148,20 +150,17 @@ forever
 end
 
 You can expand upon these basic scripts to add more features and polish to your Pong game. Feel free to ask if you need further assistance or clarification!`;
-let bill;
-
-class Scratch3YourExtension {
-    constructor(runtime) {
-        this.bill = runtime;
+        //Setting up all the neccessary components
+        const fetch = require('node-fetch');
+        const bill = runtime; //Place holder for runtime
         this.chatPopup = null;
-        this.initializeMessageListener();
     }
     
     getBlocksInUse(SpriteIdx) {
-        console.log(this.bill);
-        let blocksObject = this.bill.targets[SpriteIdx].blocks._blocks;
+        console.log(bill);
+        let blocksObject = bill.targets[SpriteIdx].blocks._blocks;
 
-        let allBlocksObject = this.bill.targets
+        let allBlocksObject = bill.targets
 
         // loop through all the targets in the all blocks object starting at target 1
         for (var i=1; i < allBlocksObject.length; i++) {
@@ -198,17 +197,23 @@ class Scratch3YourExtension {
         return alltheBlocksInGame;
     }
     
-    openChatPopup({SpriteIdx,API_KEYY}) {
+    openChatPopup({SpriteIdx,UsersApiKey}) {
         //If SpriteIdx is null than set it to 1
         SpriteIdx = 1
         // Create a new popup window
         this.chatPopup = window.open("", "ChatPopup", "width=400,height=400");
 
-        apiKey = API_KEYY;
+        //If nothing is inputted in the usersApiKey
+        let apiKey = "";
+        //else
+        apiKey = UsersApiKey;
+
+        console.log(apiKey)
+
     
         // Define sendMessage in the global scope of the popup window
         this.chatPopup.sendMessage = async () => {
-            // Get blocks in use
+            // Get blocks in current use
             let resultString = this.getBlocksInUse(SpriteIdx);
         
             let input = this.chatPopup.document.querySelector("#chat-input");
@@ -359,6 +364,7 @@ class Scratch3YourExtension {
             `);
             async function generateChatGPT(prompt) {
                 console.log("Calling the A.I. using GPT-3.5 Turbo...");
+                console.log(apiKey)
                 try {
                     const response = await fetch('https://api.openai.com/v1/chat/completions', {
                         method: 'POST',
@@ -369,7 +375,7 @@ class Scratch3YourExtension {
                         body: JSON.stringify({
                             model: 'gpt-3.5-turbo',
                             messages: [
-                                { role: 'system', content: longString }, // System instructions
+                                { role: 'system', content: this.thePrompt }, // System instructions
                                 ...prompt.map((message) => ({ role: 'user', content: message })), // User messages
                             ],
                             max_tokens: 200,
@@ -423,7 +429,7 @@ class Scratch3YourExtension {
                 {
                     opcode: 'openChatPopup',
                     blockType: BlockType.COMMAND,
-                    text: 'Open Scratch helper; Please input the index of your sprite(start from 1) [SpriteIdx](optional) and enter your openAI API key [API_KEYY]',
+                    text: 'Open Scratch helper; Please input the index of your sprite(start from 1) [SpriteIdx](optional) and enter your openAI API key [UsersApiKey]',
                     terminal: true,
                     filter: [TargetType.SPRITE, TargetType.STAGE],
                     arguments: {
@@ -431,9 +437,9 @@ class Scratch3YourExtension {
                             defaultValue: 1,
                             type: ArgumentType.NUMBER,
                         },
-                        API_KEYY: {
-                            defaultValue: '',
-                            type: ArgumentType.STRING
+                        UsersApiKey: {
+                            defaultValue: 'Enter Api Key Here',
+                            type: ArgumentType.STRING,
                         }
                     }
                 },
