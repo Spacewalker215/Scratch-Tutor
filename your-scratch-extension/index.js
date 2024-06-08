@@ -1,12 +1,9 @@
-require('regenerator-runtime/runtime');
+require('regenerator-runtime/runtime'); //Code doesn't work without this
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
-
-class Scratch3YourExtension {
-    constructor(runtime) {
-        //prompt
-        const thePrompt = `
+//prompt
+const thePrompt = `
 I want you to help the user figure out the issue, they are using the programming language called scratch; 
 I gave you all the current blocks that are in play and its in json format so you can understand. 
 Please guide them to fix their issue which is what they will be providing you with but don't give them 
@@ -150,17 +147,20 @@ forever
 end
 
 You can expand upon these basic scripts to add more features and polish to your Pong game. Feel free to ask if you need further assistance or clarification!`;
+let bill;
+class Scratch3YourExtension {
+    constructor(runtime) {
         //Setting up all the neccessary components
         const fetch = require('node-fetch');
-        const bill = runtime; //Place holder for runtime
+        this.bill = runtime; //Place holder for runtime
         this.chatPopup = null;
     }
     
     getBlocksInUse(SpriteIdx) {
-        console.log(bill);
-        let blocksObject = bill.targets[SpriteIdx].blocks._blocks;
+        console.log(this.bill);
+        let blocksObject = this.bill.targets[SpriteIdx].blocks._blocks;
 
-        let allBlocksObject = bill.targets
+        let allBlocksObject = this.bill.targets
 
         // loop through all the targets in the all blocks object starting at target 1
         for (var i=1; i < allBlocksObject.length; i++) {
@@ -375,7 +375,7 @@ You can expand upon these basic scripts to add more features and polish to your 
                         body: JSON.stringify({
                             model: 'gpt-3.5-turbo',
                             messages: [
-                                { role: 'system', content: this.thePrompt }, // System instructions
+                                { role: 'system', content: thePrompt }, // System instructions
                                 ...prompt.map((message) => ({ role: 'user', content: message })), // User messages
                             ],
                             max_tokens: 200,
