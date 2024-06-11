@@ -20,9 +20,10 @@ Feel free to explore, experiment, and most importantly, have fun with Scratch! Y
 
 ---
 
-Happy coding! 🎉
-
----
 ## Note
 **You need an OpenAI API to use this extention**
 [Find your API keys here](https://platform.openai.com/api-keys)
+
+---
+
+Happy coding! 🎉
