@@ -2,7 +2,7 @@
 
 ## 📘 Introduction
 
-Welcome to **Scratch Helper**, your friendly A.I. Copilot for Scratch! This tool is designed with young learners in mind, offering guidance and support to help kids explore and master Scratch, a popular visual programming language. Currently in its beta phase, we're eager to hear your feedback and bug reports to enhance its functionality.
+Welcome to **Scratch Helper**, your friendly A.I. Copilot for Scratch! This tool is designed with young learners in mind, offering guidance and support to help kids explore and master Scratch, a popular visual programming language. Currently in its beta phase, I'm eager to hear your feedback and bug reports to enhance its functionality.
 
 Why spend countless hours watching video tutorials just to understand a simple block in Scratch? With **Scratch Helper**, you can quickly get the assistance you need, making your learning journey smoother and more enjoyable.
 
