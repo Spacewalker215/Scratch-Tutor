@@ -63,7 +63,7 @@ git checkout "$DEVBRANCH" || error_exit "Error: Failed to checkout the developme
 
 # Assuming your GitHub repository URL is something like https://github.com/username/repository
 # Modify the following line to match your repository URL
-REPO_URL="https://github.com/username/repository"
+REPO_URL="https://github.com/Spacewalker215/Scratch-Tutor/"
 
 # Display the success message with the URL
 echo "Website successfully made. You can visit it at: ${REPO_URL}/gh-pages/scratch/"
