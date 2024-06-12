@@ -12,7 +12,7 @@ Why spend countless hours watching video tutorials just to understand a simple b
 
 Using Scratch Helper is a breeze! Simply click on the link provided on the right side of the screen or tap on the link below to get started. Our tool is ready to guide you through your Scratch projects, making learning interactive and fun.
 
-🔗 [Get Started with Scratch Helper](https://github.com/Spacewalker215)
+🔗 [Get Started with Scratch Helper](https://spacewalker215.github.io/Scratch-Tutor/scratch/)
 
 ---
 
