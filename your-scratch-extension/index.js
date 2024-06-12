@@ -1,5 +1,5 @@
+// Requirements for the project
 require('regenerator-runtime/runtime'); //Code doesn't work without this
-
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
