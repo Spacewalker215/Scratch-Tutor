@@ -209,8 +209,6 @@ class Scratch3YourExtension {
         //else
         apiKey = UsersApiKey;
 
-        console.log(apiKey)
-
         // Define sendMessage in the global scope of the popup window
         this.chatPopup.sendMessage = async () => {
             // Get blocks in current use
