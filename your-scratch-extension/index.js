@@ -234,7 +234,7 @@ class Scratch3YourExtension {
                 this.chatPopup.document.write(`
                 <html>
                     <head>
-                        <title>Scratch Chat</title>
+                        <title>Scratch A.I Chat</title>
                         <style>
                             body {
                                 font-family: 'Arial', sans-serif;
