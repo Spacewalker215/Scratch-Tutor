@@ -182,9 +182,9 @@ class Scratch3YourExtension {
         console.log("All the blocks in the current sprite: "+JSON.stringify(allBlocksInfo, null, 2));
 
         let alltheBlocksInGame = JSON.stringify(allBlocksInfo, null, 2)
-
         let resultString = '';
-    
+        
+        // Only getting relevent block info
         function iterate(obj) {
             for (let key in obj) {
                 if(obj[key].opcode != "math_number"){
