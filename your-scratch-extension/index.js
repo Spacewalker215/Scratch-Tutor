@@ -231,7 +231,6 @@ class Scratch3YourExtension {
                 input.value = '';
             }
         };        
-
                 // Inject HTML and JavaScript into the popup window
                 this.chatPopup.document.write(`
                 <html>
