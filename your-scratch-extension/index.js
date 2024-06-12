@@ -1,4 +1,5 @@
 require('regenerator-runtime/runtime'); //Code doesn't work without this
+
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
@@ -148,6 +149,7 @@ end
 
 You can expand upon these basic scripts to add more features and polish to your Pong game. Feel free to ask if you need further assistance or clarification!`;
 let bill;
+
 class Scratch3YourExtension {
     constructor(runtime) {
         //Setting up all the neccessary components
