@@ -159,7 +159,6 @@ class Scratch3YourExtension {
     getBlocksInUse(SpriteIdx) {
         console.log(this.bill);
         let blocksObject = this.bill.targets[SpriteIdx].blocks._blocks;
-
         let allBlocksObject = this.bill.targets
 
         // loop through all the targets in the all blocks object starting at target 1
@@ -210,7 +209,6 @@ class Scratch3YourExtension {
 
         console.log(apiKey)
 
-    
         // Define sendMessage in the global scope of the popup window
         this.chatPopup.sendMessage = async () => {
             // Get blocks in current use
@@ -221,6 +219,7 @@ class Scratch3YourExtension {
         
             let wholeMsg = [resultString, userMessage];
         
+            // Makes sure the user hasn't sent an empty message
             if (userMessage !== "") {
                 let chatMessages = this.chatPopup.document.querySelector("#chat-messages");
                 chatMessages.innerHTML += "<p>User: " + userMessage + "</p>";
