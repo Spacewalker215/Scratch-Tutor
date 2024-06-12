@@ -2,7 +2,7 @@ require('regenerator-runtime/runtime'); //Code doesn't work without this
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
-//prompt
+// ChatGPT Prompt
 const thePrompt = `
 I want you to help the user figure out the issue, they are using the programming language called scratch; 
 I gave you all the current blocks that are in play and its in json format so you can understand. 
