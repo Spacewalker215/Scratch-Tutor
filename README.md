@@ -16,13 +16,21 @@ Using Scratch Helper is a breeze! Simply click on the link provided on the right
 
 ---
 
-Feel free to explore, experiment, and most importantly, have fun with Scratch! Your journey into the world of coding starts here.
+Feel free to explore, experiment, and, most importantly, have fun with Scratch! Your journey into the world of coding starts here.
 
 ---
 
-## Note
-**You need an OpenAI API to use this extention**
-[Find your API keys here](https://platform.openai.com/api-keys)
+## 📝 Note
+
+**You need an OpenAI API to use this extension.**
+
+🔗 [Find your API keys here](https://platform.openai.com/api-keys)
+
+---
+
+## 🔧 Editing
+
+To customize the code, navigate to the **your-scratch-extension** folder and edit the `index.js` file.
 
 ---
 
