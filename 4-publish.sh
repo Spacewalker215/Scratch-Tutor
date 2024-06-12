@@ -13,13 +13,12 @@ if [ ! -f "$SCRATCH_SRC_HOME/patched" ]; then
     exit 1
 fi
 
-# allow this script to be run from other locations, despite the
-#  relative file paths used in it
+# Allow this script to be run from other locations, despite the relative file paths used in it
 if [[ $BASH_SOURCE = */* ]]; then
   cd -- "${BASH_SOURCE%/*}/" || exit
 fi
 
-echo "Commit any changes"
+echo "Committing any changes"
 git add your-scratch-extension
 git add dependencies
 git commit -m "Update" || echo "No changes to commit"
@@ -38,8 +37,9 @@ else
   git checkout -b gh-pages || { echo "Failed to create gh-pages branch"; exit 1; }
 fi
 
-echo "Pulling latest changes from remote gh-pages"
-git pull origin gh-pages || { echo "Failed to pull remote gh-pages"; exit 1; }
+echo "Pulling latest changes from remote gh-pages (with merge)"
+# Using the --no-rebase option ensures it will merge rather than rebase
+git pull --no-rebase origin gh-pages || { echo "Failed to pull remote gh-pages"; exit 1; }
 
 echo "Preparing a publish folder"
 if [ -d "scratch" ]; then
