@@ -159,7 +159,6 @@ class Scratch3YourExtension {
     }
     
     getBlocksInUse(SpriteIdx) {
-        console.log(this.bill);
         let blocksObject = this.bill.targets[SpriteIdx].blocks._blocks;
         let allBlocksObject = this.bill.targets
 
@@ -361,8 +360,7 @@ class Scratch3YourExtension {
                 </html>
             `);
             async function generateChatGPT(prompt) {
-                console.log("Calling the A.I. using GPT-3.5 Turbo...");
-                console.log(apiKey)
+                console.log("Calling the A.I. using GPT-3.5 Turbo...")
                 try {
                     const response = await fetch('https://api.openai.com/v1/chat/completions', {
                         method: 'POST',
@@ -381,8 +379,7 @@ class Scratch3YourExtension {
                     });
             
                     const responseData = await response.json();
-            
-                    console.log('OpenAI API Response:', responseData);
+          
             
                     if (responseData.choices && responseData.choices.length > 0) {
                         const generatedMessage = responseData.choices[0].message.content.trim();
