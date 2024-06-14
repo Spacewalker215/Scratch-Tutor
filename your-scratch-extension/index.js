@@ -337,7 +337,7 @@ class Scratch3YourExtension {
                         </div>
 
                         <script>
-                        //Getting users API Key
+                        // Getting users API Key
                         let apiKey = prompt("Please enter API Key")
                         // Function to handle Enter key press
                         document.getElementById("chat-input").addEventListener("keyup", function (event) {
