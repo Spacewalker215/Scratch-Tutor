@@ -197,19 +197,20 @@ class Scratch3YourExtension {
         return alltheBlocksInGame;
     }
     
-    openChatPopup({SpriteIdx,UsersApiKey}) {
+    openChatPopup({SpriteIdx}) {
         //If SpriteIdx is null than set it to 1
         SpriteIdx = 1
+
         // Create a new popup window
         this.chatPopup = window.open("", "ChatPopup", "width=400,height=400");
 
-        //If nothing is inputted in the usersApiKey
-        let apiKey = "";
-        //else
-        apiKey = UsersApiKey;
+        // Declaring
+        let apiKey;
 
         // Define sendMessage in the global scope of the popup window
-        this.chatPopup.sendMessage = async () => {
+        this.chatPopup.sendMessage = async (APIKEY) => {
+            // Getting users API key
+            apiKey = APIKEY
             // Get blocks in current use
             let resultString = this.getBlocksInUse(SpriteIdx);
         
@@ -328,7 +329,7 @@ class Scratch3YourExtension {
                         <div id="chat-container" hidden>
                             <div id="chat-messages"></div>
                             <input type="text" id="chat-input" />
-                            <button id="send-button" onclick="window.sendMessage()">Send</button>
+                            <button id="send-button" onclick="window.sendMessage(apiKey)">Send</button>
                         </div>
 
                         <div id="scratchblocks-container" hidden>
@@ -336,10 +337,12 @@ class Scratch3YourExtension {
                         </div>
 
                         <script>
+                        //Getting users API Key
+                        let apiKey = prompt("Please enter API Key")
                         // Function to handle Enter key press
                         document.getElementById("chat-input").addEventListener("keyup", function (event) {
                             if (event.key === "Enter") {
-                                window.sendMessage();
+                                window.sendMessage(apiKey);
                             }
                         });
                         // Function to show and hide chat and scratchblocks
@@ -410,17 +413,13 @@ class Scratch3YourExtension {
                 {
                     opcode: 'openChatPopup',
                     blockType: BlockType.COMMAND,
-                    text: 'Enter sprite index (starting from 1) [SpriteIdx](optional) and OpenAI API key [UsersApiKey]',
+                    text: 'Enter sprite index (starting from 1) [SpriteIdx](optional)',
                     terminal: true,
                     filter: [TargetType.SPRITE, TargetType.STAGE],
                     arguments: {
                         SpriteIdx: {
                             defaultValue: 1,
                             type: ArgumentType.NUMBER,
-                        },
-                        UsersApiKey: {
-                            defaultValue: 'Enter Api Key Here',
-                            type: ArgumentType.STRING,
                         }
                     }
                 },
