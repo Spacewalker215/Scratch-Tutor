@@ -178,7 +178,7 @@ class Scratch3YourExtension {
         let alltheBlocksInGame = JSON.stringify(allBlocksInfo, null, 2)
         let resultString = '';
         
-        // Only getting relevent block info
+        // Only getting relevent block information
         function iterate(obj) {
             for (let key in obj) {
                 if(obj[key].opcode != "math_number"){
