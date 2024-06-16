@@ -37,6 +37,14 @@ else
   git checkout -b gh-pages
 fi
 
+# Fetch latest changes from the remote branch
+echo "Fetching latest changes from remote"
+git fetch origin
+
+# Integrate changes from remote to local
+echo "Integrating changes from remote to local"
+git rebase origin/gh-pages || (echo "Rebase failed, attempting merge"; git merge origin/gh-pages)
+
 echo "Preparing a publish folder"
 if [ -d "scratch" ]
 then
