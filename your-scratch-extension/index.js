@@ -77,8 +77,6 @@ Computer: To create a FizzBuzz game in Scratch, you can follow these steps:
 
 Here's the script in text format:
 
-scss
-
 when green flag clicked
 set [counter v] to [1]
 repeat until <(counter) > [100]>
@@ -120,7 +118,6 @@ Computer: Creating a Pong game in Scratch can be a fun project! Here's a basic o
 
 Here's a basic outline of the Scratch script for the paddles' movement:
 
-vbnet
 
 when green flag clicked
 forever
@@ -133,8 +130,6 @@ forever
 end
 
 And for the ball movement:
-
-scss
 
 when green flag clicked
 forever
