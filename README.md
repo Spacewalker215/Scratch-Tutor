@@ -19,7 +19,7 @@ Using Scratch Helper is a breeze! Simply click on the link provided on the right
 5. Two tabs will appear: one called A.I chat and one called Scratch Block Translator, which is a GitHub project created by blob8108. You can find his repo [here](https://github.com/scratchblocks/scratchblocks).
 6. After clicking A.I chat, ask it anything about your code, and it'll help guide you to the answer. It'll output blocks which you can copy and paste into the Scratch Block Translator to see what they look like.
 
-Here is a video: [Video](https://vimeo.com/957212089?share=copy)
+Here is a video: [Video](https://vimeo.com/959853686?share=copy)
 
 🔗 [Get Started with Scratch Helper](https://spacewalker215.github.io/Scratch-Tutor/scratch/)
 
