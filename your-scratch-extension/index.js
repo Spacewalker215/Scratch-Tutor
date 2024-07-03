@@ -208,6 +208,7 @@ class Scratch3YourExtension {
             apiKey = APIKEY
             // Uncomment line below for your own enviroment api key 
             // apiKey = process.env.OPEN_AI_APIKEY
+
             // Get blocks in current use
             let resultString = this.getBlocksInUse(SpriteIdx);
         
