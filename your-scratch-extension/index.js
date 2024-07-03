@@ -204,30 +204,28 @@ class Scratch3YourExtension {
 
         // Define sendMessage in the global scope of the popup window
         this.chatPopup.sendMessage = async (APIKEY) => {
-            // Getting users API key
-            apiKey = APIKEY
-            // Uncomment line below for your own enviroment api key 
-            // apiKey = process.env.OPEN_AI_APIKEY
-
-            // Get blocks in current use
-            let resultString = this.getBlocksInUse(SpriteIdx);
+            apiKey = APIKEY;
         
+            let resultString = this.getBlocksInUse(SpriteIdx);
             let input = this.chatPopup.document.querySelector("#chat-input");
             let userMessage = input.value;
         
             let wholeMsg = [resultString, userMessage];
         
-            // Makes sure the user hasn't sent an empty message
             if (userMessage !== "") {
                 let chatMessages = this.chatPopup.document.querySelector("#chat-messages");
-                chatMessages.innerHTML += "<p>User: " + userMessage + "</p>";
+                chatMessages.innerHTML += `<p>User: ${userMessage}</p>`;
+        
                 let response = await generateChatGPT(wholeMsg);
-                chatMessages.innerHTML += "<p>Assistant: " + response + "</p>";
-                // Send the original user message to the parent window
+        
+                // Split response into lines and create a new paragraph for each line
+                let responseLines = response.split('\n').map(line => `<p>${line}</p>`).join('');
+        
+                chatMessages.innerHTML += `<div class="assistant">${responseLines}</div>`;
                 this.chatPopup.opener.postMessage({ type: 'chatMessage', message: wholeMsg }, '*');
                 input.value = '';
             }
-        };        
+        };                
                 // Inject HTML and JavaScript into the popup window
                 this.chatPopup.document.write(`
                 <html>
@@ -253,6 +251,7 @@ class Scratch3YourExtension {
                                 max-width: 70%;
                                 word-wrap: break-word;
                                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                                white-space: pre-wrap; /* Preserves whitespace for multiline text */
                             }
 
                             .user {
@@ -429,7 +428,7 @@ class Scratch3YourExtension {
     
             
             async function generateChatGPT(prompt) {
-                console.log("Calling the A.I. using GPT-3.5 Turbo...")
+                console.log("Calling the A.I. using GPT-3.5 Turbo...");
                 try {
                     const response = await fetch('https://api.openai.com/v1/chat/completions', {
                         method: 'POST',
@@ -448,7 +447,6 @@ class Scratch3YourExtension {
                     });
             
                     const responseData = await response.json();
-          
             
                     if (responseData.choices && responseData.choices.length > 0) {
                         const generatedMessage = responseData.choices[0].message.content.trim();
@@ -461,7 +459,7 @@ class Scratch3YourExtension {
                     console.error('Error calling the OpenAI API:', error);
                     throw error;
                 }
-            }                                                                               
+            }                                                                                           
     }        
 
     getInfo() {
