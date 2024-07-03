@@ -360,6 +360,7 @@ class Scratch3YourExtension {
                     </body>
                 </html>
             `);
+            
             async function generateChatGPT(prompt) {
                 console.log("Calling the A.I. using GPT-3.5 Turbo...")
                 try {
