@@ -230,153 +230,202 @@ class Scratch3YourExtension {
         };        
                 // Inject HTML and JavaScript into the popup window
                 this.chatPopup.document.write(`
-                    <html>
-                        <head>
-                            <title>Scratch A.I Chat</title>
-                            <style>
-                                body {
-                                    font-family: 'Arial', sans-serif;
-                                    background-color: #f4f4f4;
-                                    margin: 0;
-                                    padding: 0;
-                                    height: 100%;
-                                    display: flex;
-                                    flex-direction: column;
-                                }
-                    
-                                .chat-bubble {
-                                    padding: 8px;
-                                    margin: 5px 0;
-                                    border-radius: 10px;
-                                    max-width: 70%;
-                                    word-wrap: break-word;
-                                }
-                    
-                                .user {
-                                    background-color: #4CAF50;
-                                    color: #fff;
-                                    align-self: flex-start;
-                                }
-                    
-                                .assistant {
-                                    background-color: #ddd;
-                                    color: #333;
-                                    align-self: flex-end;
-                                }
-                    
-                                #chat-container {
-                                    width: 100%;
-                                    height: calc(100% - 50px); /* Subtract height of the navigation */
-                                    margin: 0;
-                                    background-color: #fff;
-                                    border: 2px solid #ddd;
-                                    border-radius: 5px;
-                                    padding: 15px;
-                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                                    overflow-y: auto;
-                                }
-                    
-                                #chat-messages {
-                                    height: calc(100% - 40px); /* Adjust height to account for input and button */
-                                    overflow-y: auto;
-                                    border-bottom: 1px solid #ddd;
-                                    margin-bottom: 10px;
-                                }
-                    
-                                #chat-input {
-                                    width: 70%;
-                                    padding: 8px;
-                                    border: 1px solid #ddd;
-                                    border-radius: 3px;
-                                    margin-right: 5px;
-                                    box-sizing: border-box;
-                                }
-                    
-                                #send-button {
-                                    padding: 8px 15px;
-                                    background-color: #4CAF50;
-                                    color: #fff;
-                                    border: none;
-                                    border-radius: 3px;
-                                    cursor: pointer;
-                                }
-                    
-                                nav {
-                                    display: flex;
-                                    justify-content: space-around;
-                                    background-color: #f4f4f4;
-                                    padding: 10px;
-                                    border-bottom: 2px solid #ddd;
-                                }
-                    
-                                button {
-                                    background-color: transparent;
-                                    border: none;
-                                    cursor: pointer;
-                                    font-size: 16px;
-                                    padding: 5px;
-                                }
-                    
-                                #scratchblocks {
-                                    width: 100%;
-                                    height: calc(100% - 50px); /* Subtract height of the navigation */
-                                    border: none;
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <nav>
-                                <button onclick="showChat()">A.I Chat</button>
-                                <button onclick="showScratchblocks()">Scratch Block Translator</button>
-                            </nav>
-                            <div id="chat-container" hidden>
-                                <div id="chat-messages"></div>
+                <html>
+                    <head>
+                        <title>Scratch A.I Chat</title>
+                        <style>
+                            body {
+                                font-family: 'Arial', sans-serif;
+                                background-color: #ececec;
+                                margin: 0;
+                                padding: 0;
+                                height: 100%;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: flex-start;
+                                align-items: center;
+                            }
+
+                            .chat-bubble {
+                                padding: 10px;
+                                margin: 5px 0;
+                                border-radius: 15px;
+                                max-width: 70%;
+                                word-wrap: break-word;
+                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                            }
+
+                            .user {
+                                background-color: #4caf50;
+                                color: #fff;
+                                align-self: flex-start;
+                            }
+
+                            .assistant {
+                                background-color: #d3d3d3;
+                                color: #333;
+                                align-self: flex-end;
+                            }
+
+                            #chat-container, #scratchblocks-container {
+                                width: 90%;
+                                height: calc(100% - 60px);
+                                background-color: #fff;
+                                border: 2px solid #ccc;
+                                border-radius: 10px;
+                                padding: 15px;
+                                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                                display: none; /* Hide initially */
+                                overflow: hidden;
+                            }
+
+                            #chat-container {
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: space-between;
+                                transition: opacity 0.3s ease, visibility 0.3s ease;
+                            }
+
+                            #chat-messages {
+                                flex-grow: 1;
+                                overflow-y: auto;
+                                margin-bottom: 10px;
+                                padding-right: 10px; /* Add padding for scrollbar */
+                            }
+
+                            #input-container {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                padding: 10px;
+                                background-color: #f4f4f4;
+                                border-radius: 10px;
+                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                                margin-top: 10px;
+                            }
+
+                            #chat-input {
+                                width: 70%;
+                                padding: 10px;
+                                border: 1px solid #ccc;
+                                border-radius: 5px;
+                                margin-right: 10px;
+                                box-sizing: border-box;
+                                flex-grow: 1; /* Allow input to grow */
+                            }
+
+                            #send-button {
+                                padding: 10px 20px;
+                                background-color: #4caf50;
+                                color: #fff;
+                                border: none;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                            }
+
+                            nav {
+                                display: flex;
+                                justify-content: space-around;
+                                background-color: #ececec;
+                                padding: 15px;
+                                width: 100%;
+                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                                margin-bottom: 10px;
+                                box-sizing: border-box;
+                            }
+
+                            button {
+                                background-color: transparent;
+                                border: none;
+                                cursor: pointer;
+                                font-size: 16px;
+                                padding: 5px 10px;
+                                transition: background-color 0.3s ease;
+                            }
+
+                            button:hover {
+                                background-color: #dcdcdc;
+                                border-radius: 5px;
+                            }
+
+                            #scratchblocks-container iframe {
+                                width: 100%;
+                                height: 100%;
+                                border: none;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <nav>
+                            <button onclick="showChat()">A.I Chat</button>
+                            <button onclick="showScratchblocks()">Scratch Block Translator</button>
+                        </nav>
+                        <div id="chat-container">
+                            <div id="chat-messages"></div>
+                            <div id="input-container">
                                 <input type="text" id="chat-input" />
                                 <button id="send-button" onclick="window.sendMessage(apiKey)">Send</button>
                             </div>
-                    
-                            <div id="scratchblocks-container" hidden>
-                                <iframe src="https://scratchblocks.github.io" style="width:100%; height:100vh; border:none;"></iframe>
-                            </div>
-                    
-                            <script>
+                        </div>
+
+                        <div id="scratchblocks-container">
+                            <iframe src="https://scratchblocks.github.io"></iframe>
+                        </div>
+
+                        <script>
                             // Getting user's API Key
                             let apiKey = prompt("Please enter API Key (leave empty if you have changed api key in the code)");
-                            
+
                             // Function to handle Enter key press
                             document.getElementById("chat-input").addEventListener("keyup", function (event) {
                                 if (event.key === "Enter") {
                                     window.sendMessage(apiKey);
                                 }
                             });
-                            
+
                             // Function to show and hide chat and scratchblocks
                             function showChat() {
-                                document.getElementById("chat-container").hidden = false;
-                                document.getElementById("scratchblocks-container").hidden = true;
-                                resizeChatContainer();
+                                const chatContainer = document.getElementById("chat-container");
+                                const scratchblocksContainer = document.getElementById("scratchblocks-container");
+
+                                scratchblocksContainer.style.display = "none";
+                                chatContainer.style.display = "flex";
+                                chatContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px"; // 20px for margin
                             }
-                    
+
                             function showScratchblocks() {
-                                document.getElementById("scratchblocks-container").hidden = false;
-                                document.getElementById("chat-container").hidden = true;
+                                const chatContainer = document.getElementById("chat-container");
+                                const scratchblocksContainer = document.getElementById("scratchblocks-container");
+
+                                chatContainer.style.display = "none";
+                                scratchblocksContainer.style.display = "block";
+                                scratchblocksContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px"; // 20px for margin
                             }
-                    
+
                             // Function to resize chat container to window size
                             function resizeChatContainer() {
                                 const chatContainer = document.getElementById("chat-container");
-                                chatContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight) + "px";
+                                const scratchblocksContainer = document.getElementById("scratchblocks-container");
+
+                                if (chatContainer.style.display === "flex") {
+                                    chatContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px";
+                                } else if (scratchblocksContainer.style.display === "block") {
+                                    scratchblocksContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px";
+                                }
                             }
-                    
-                            // Add event listener to resize chat container when window is resized
+
+                            // Add event listener to resize containers when window is resized
                             window.addEventListener("resize", resizeChatContainer);
-                    
+
                             // Show the chat tab by default
                             window.onload = showChat;
-                            </script>
-                        </body>
-                    </html>
+                        </script>
+                    </body>
+                </html>
             `);
+
+
     
             
             async function generateChatGPT(prompt) {
