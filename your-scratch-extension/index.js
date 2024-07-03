@@ -199,7 +199,7 @@ class Scratch3YourExtension {
         // Create a new popup window
         this.chatPopup = window.open("", "ChatPopup", "width=800,height=800");
 
-        // Declaring
+        // Declaring the apiKey
         let apiKey;
 
         // Define sendMessage in the global scope of the popup window
