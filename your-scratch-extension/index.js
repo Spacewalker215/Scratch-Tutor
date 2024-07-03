@@ -230,136 +230,154 @@ class Scratch3YourExtension {
         };        
                 // Inject HTML and JavaScript into the popup window
                 this.chatPopup.document.write(`
-                <html>
-                    <head>
-                        <title>Scratch A.I Chat</title>
-                        <style>
-                            body {
-                                font-family: 'Arial', sans-serif;
-                                background-color: #f4f4f4;
-                                margin: 0;
-                                padding: 0;
+                    <html>
+                        <head>
+                            <title>Scratch A.I Chat</title>
+                            <style>
+                                body {
+                                    font-family: 'Arial', sans-serif;
+                                    background-color: #f4f4f4;
+                                    margin: 0;
+                                    padding: 0;
+                                    height: 100%;
+                                    display: flex;
+                                    flex-direction: column;
+                                }
+                    
+                                .chat-bubble {
+                                    padding: 8px;
+                                    margin: 5px 0;
+                                    border-radius: 10px;
+                                    max-width: 70%;
+                                    word-wrap: break-word;
+                                }
+                    
+                                .user {
+                                    background-color: #4CAF50;
+                                    color: #fff;
+                                    align-self: flex-start;
+                                }
+                    
+                                .assistant {
+                                    background-color: #ddd;
+                                    color: #333;
+                                    align-self: flex-end;
+                                }
+                    
+                                #chat-container {
+                                    width: 100%;
+                                    height: calc(100% - 50px); /* Subtract height of the navigation */
+                                    margin: 0;
+                                    background-color: #fff;
+                                    border: 2px solid #ddd;
+                                    border-radius: 5px;
+                                    padding: 15px;
+                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                    overflow-y: auto;
+                                }
+                    
+                                #chat-messages {
+                                    height: calc(100% - 40px); /* Adjust height to account for input and button */
+                                    overflow-y: auto;
+                                    border-bottom: 1px solid #ddd;
+                                    margin-bottom: 10px;
+                                }
+                    
+                                #chat-input {
+                                    width: 70%;
+                                    padding: 8px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 3px;
+                                    margin-right: 5px;
+                                    box-sizing: border-box;
+                                }
+                    
+                                #send-button {
+                                    padding: 8px 15px;
+                                    background-color: #4CAF50;
+                                    color: #fff;
+                                    border: none;
+                                    border-radius: 3px;
+                                    cursor: pointer;
+                                }
+                    
+                                nav {
+                                    display: flex;
+                                    justify-content: space-around;
+                                    background-color: #f4f4f4;
+                                    padding: 10px;
+                                    border-bottom: 2px solid #ddd;
+                                }
+                    
+                                button {
+                                    background-color: transparent;
+                                    border: none;
+                                    cursor: pointer;
+                                    font-size: 16px;
+                                    padding: 5px;
+                                }
+                    
+                                #scratchblocks {
+                                    width: 100%;
+                                    height: calc(100% - 50px); /* Subtract height of the navigation */
+                                    border: none;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <nav>
+                                <button onclick="showChat()">A.I Chat</button>
+                                <button onclick="showScratchblocks()">Scratch Block Translator</button>
+                            </nav>
+                            <div id="chat-container" hidden>
+                                <div id="chat-messages"></div>
+                                <input type="text" id="chat-input" />
+                                <button id="send-button" onclick="window.sendMessage(apiKey)">Send</button>
+                            </div>
+                    
+                            <div id="scratchblocks-container" hidden>
+                                <iframe src="https://scratchblocks.github.io" style="width:100%; height:100vh; border:none;"></iframe>
+                            </div>
+                    
+                            <script>
+                            // Getting user's API Key
+                            let apiKey = prompt("Please enter API Key (leave empty if you have changed api key in the code)");
+                            
+                            // Function to handle Enter key press
+                            document.getElementById("chat-input").addEventListener("keyup", function (event) {
+                                if (event.key === "Enter") {
+                                    window.sendMessage(apiKey);
+                                }
+                            });
+                            
+                            // Function to show and hide chat and scratchblocks
+                            function showChat() {
+                                document.getElementById("chat-container").hidden = false;
+                                document.getElementById("scratchblocks-container").hidden = true;
+                                resizeChatContainer();
                             }
-
-                            .chat-bubble {
-                                padding: 8px;
-                                margin: 5px 0;
-                                border-radius: 10px;
-                                max-width: 70%;
-                                word-wrap: break-word;
+                    
+                            function showScratchblocks() {
+                                document.getElementById("scratchblocks-container").hidden = false;
+                                document.getElementById("chat-container").hidden = true;
                             }
-        
-                            .user {
-                                background-color: #4CAF50;
-                                color: #fff;
-                                align-self: flex-start;
+                    
+                            // Function to resize chat container to window size
+                            function resizeChatContainer() {
+                                const chatContainer = document.getElementById("chat-container");
+                                chatContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight) + "px";
                             }
-        
-                            .assistant {
-                                background-color: #ddd;
-                                color: #333;
-                                align-self: flex-end;
-                            }
-
-                            #chat-container {
-                                width: 300px;
-                                margin: 50px auto;
-                                background-color: #fff;
-                                border: 2px solid #ddd;
-                                border-radius: 5px;
-                                padding: 15px;
-                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                            }
-
-                            #chat-messages {
-                                height: 200px;
-                                overflow-y: scroll;
-                                border-bottom: 1px solid #ddd;
-                                margin-bottom: 10px;
-                            }
-
-                            #chat-input {
-                                width: 70%;
-                                padding: 8px;
-                                border: 1px solid #ddd;
-                                border-radius: 3px;
-                                margin-right: 5px;
-                            }
-
-                            #send-button {
-                                padding: 8px 15px;
-                                background-color: #4CAF50;
-                                color: #fff;
-                                border: none;
-                                border-radius: 3px;
-                                cursor: pointer;
-                            }
-
-                            nav {
-                                display: flex;
-                                justify-content: space-around;
-                                background-color: #f4f4f4;
-                                padding: 10px;
-                                border-bottom: 2px solid #ddd;
-                            }
-                
-                            button {
-                                background-color: transparent;
-                                border: none;
-                                cursor: pointer;
-                                font-size: 16px;
-                                padding: 5px;
-                            }
-                
-                            /* Style for the iframe */
-                            #scratchblocks {
-                                width: 100%;
-                                height: 500px;
-                                border: none;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <nav>
-                            <button onclick="showChat()">A.I Chat</button>
-                            <button onclick="showScratchblocks()">Scratch Block Translator</button>
-                        </nav>
-                        <div id="chat-container" hidden>
-                            <div id="chat-messages"></div>
-                            <input type="text" id="chat-input" />
-                            <button id="send-button" onclick="window.sendMessage(apiKey)">Send</button>
-                        </div>
-
-                        <div id="scratchblocks-container" hidden>
-                            <iframe src="https://scratchblocks.github.io" style="width:100%; height:100vh; border:none;"></iframe>
-                        </div>
-
-                        <script>
-                        // Getting users API Key
-                        let apiKey = prompt("Please enter API Key (leave empty if you have changed api key in the code)")
-                        // Function to handle Enter key press
-                        document.getElementById("chat-input").addEventListener("keyup", function (event) {
-                            if (event.key === "Enter") {
-                                window.sendMessage(apiKey);
-                            }
-                        });
-                        // Function to show and hide chat and scratchblocks
-                        function showChat() {
-                            document.getElementById("chat-container").hidden = false;
-                            document.getElementById("scratchblocks-container").hidden = true;
-                        }
-
-                        function showScratchblocks() {
-                            document.getElementById("scratchblocks-container").hidden = false;
-                            document.getElementById("chat-container").hidden = true;
-                        }
-
-                        // Show the chat tab by default
-                        window.onload = showChat;
-                        </script>
-                    </body>
-                </html>
+                    
+                            // Add event listener to resize chat container when window is resized
+                            window.addEventListener("resize", resizeChatContainer);
+                    
+                            // Show the chat tab by default
+                            window.onload = showChat;
+                            </script>
+                        </body>
+                    </html>
             `);
+    
             
             async function generateChatGPT(prompt) {
                 console.log("Calling the A.I. using GPT-3.5 Turbo...")
