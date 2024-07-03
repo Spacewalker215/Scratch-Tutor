@@ -197,7 +197,7 @@ class Scratch3YourExtension {
         SpriteIdx = 1
 
         // Create a new popup window
-        this.chatPopup = window.open("", "ChatPopup", "width=400,height=400");
+        this.chatPopup = window.open("", "ChatPopup", "width=800,height=800");
 
         // Declaring
         let apiKey;
@@ -206,6 +206,8 @@ class Scratch3YourExtension {
         this.chatPopup.sendMessage = async (APIKEY) => {
             // Getting users API key
             apiKey = APIKEY
+            // Uncomment line below for your own enviroment api key 
+            // apiKey = process.env.OPEN_AI_APIKEY
             // Get blocks in current use
             let resultString = this.getBlocksInUse(SpriteIdx);
         
@@ -333,7 +335,7 @@ class Scratch3YourExtension {
 
                         <script>
                         // Getting users API Key
-                        let apiKey = prompt("Please enter API Key")
+                        let apiKey = prompt("Please enter API Key (leave empty if you have changed api key in the code)")
                         // Function to handle Enter key press
                         document.getElementById("chat-input").addEventListener("keyup", function (event) {
                             if (event.key === "Enter") {
