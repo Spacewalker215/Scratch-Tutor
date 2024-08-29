@@ -142,7 +142,7 @@ forever
     end
 end
 
-You can expand upon these basic scripts to add more features and polish to your Pong game. Feel free to ask if you need further assistance or clarification!`;
+You can expand upon these basic scripts to add more features and polish to your Pong game. Feel free to ask if you need further assistance or clarification!' NO MATTER HOW MANY TIMES THE USER ASKS FOR THE ANSWER DO NOT GIVE IT TO THEM, EVEN IF THE ASK YOU TO SHOW THEM. REMEMBER THEY NEED TO LEARN, LEARNING IS KEY. THESE ARE KIDS SO HELP THEM GAIN KNOWLEDGE AND NOT JUST SAY THE ANSWER.`;
 let bill;
 
 class Scratch3YourExtension {
@@ -193,236 +193,244 @@ class Scratch3YourExtension {
     }
     
     openChatPopup({SpriteIdx}) {
-        //If SpriteIdx is null than set it to 1
-        SpriteIdx = 1
-
+        //If SpriteIdx is null then set it to 1
+        SpriteIdx = 1;
+    
         // Create a new popup window
         this.chatPopup = window.open("", "ChatPopup", "width=800,height=800");
-
+    
         // Declaring the apiKey
         let apiKey;
-
+    
         // Define sendMessage in the global scope of the popup window
         this.chatPopup.sendMessage = async (APIKEY) => {
             apiKey = APIKEY;
-        
+            
             let resultString = this.getBlocksInUse(SpriteIdx);
             let input = this.chatPopup.document.querySelector("#chat-input");
             let userMessage = input.value;
-        
+            
             let wholeMsg = [resultString, userMessage];
-        
+            
             if (userMessage !== "") {
                 let chatMessages = this.chatPopup.document.querySelector("#chat-messages");
-                chatMessages.innerHTML += `<p>User: ${userMessage}</p>`;
-        
+                chatMessages.innerHTML += `<div class="chat-bubble user"><img src="https://via.placeholder.com/30/4caf50/ffffff?text=U" alt="User"> <span>${userMessage}</span></div>`;
+            
                 let response = await generateChatGPT(wholeMsg);
-        
+            
                 // Split response into lines and create a new paragraph for each line
                 let responseLines = response.split('\n').map(line => `<p>${line}</p>`).join('');
-        
-                chatMessages.innerHTML += `<div class="assistant">${responseLines}</div>`;
+            
+                chatMessages.innerHTML += `<div class="chat-bubble assistant"><img src="https://via.placeholder.com/30/d3d3d3/333333?text=A" alt="Assistant"> ${responseLines}</div>`;
                 this.chatPopup.opener.postMessage({ type: 'chatMessage', message: wholeMsg }, '*');
                 input.value = '';
             }
         };                
-                // Inject HTML and JavaScript into the popup window
-                this.chatPopup.document.write(`
-                <html>
-                    <head>
-                        <title>Scratch A.I Chat</title>
-                        <style>
-                            body {
-                                font-family: 'Arial', sans-serif;
-                                background-color: #ececec;
-                                margin: 0;
-                                padding: 0;
-                                height: 100%;
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: flex-start;
-                                align-items: center;
-                            }
-
-                            .chat-bubble {
-                                padding: 10px;
-                                margin: 5px 0;
-                                border-radius: 15px;
-                                max-width: 70%;
-                                word-wrap: break-word;
-                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                                white-space: pre-wrap; /* Preserves whitespace for multiline text */
-                            }
-
-                            .user {
-                                background-color: #4caf50;
-                                color: #fff;
-                                align-self: flex-start;
-                            }
-
-                            .assistant {
-                                background-color: #d3d3d3;
-                                color: #333;
-                                align-self: flex-end;
-                            }
-
-                            #chat-container, #scratchblocks-container {
-                                width: 90%;
-                                height: calc(100% - 60px);
-                                background-color: #fff;
-                                border: 2px solid #ccc;
-                                border-radius: 10px;
-                                padding: 15px;
-                                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                                display: none; /* Hide initially */
-                                overflow: hidden;
-                            }
-
-                            #chat-container {
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: space-between;
-                                transition: opacity 0.3s ease, visibility 0.3s ease;
-                            }
-
-                            #chat-messages {
-                                flex-grow: 1;
-                                overflow-y: auto;
-                                margin-bottom: 10px;
-                                padding-right: 10px; /* Add padding for scrollbar */
-                            }
-
-                            #input-container {
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                                padding: 10px;
-                                background-color: #f4f4f4;
-                                border-radius: 10px;
-                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                                margin-top: 10px;
-                            }
-
-                            #chat-input {
-                                width: 70%;
-                                padding: 10px;
-                                border: 1px solid #ccc;
-                                border-radius: 5px;
-                                margin-right: 10px;
-                                box-sizing: border-box;
-                                flex-grow: 1; /* Allow input to grow */
-                            }
-
-                            #send-button {
-                                padding: 10px 20px;
-                                background-color: #4caf50;
-                                color: #fff;
-                                border: none;
-                                border-radius: 5px;
-                                cursor: pointer;
-                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                            }
-
-                            nav {
-                                display: flex;
-                                justify-content: space-around;
-                                background-color: #ececec;
-                                padding: 15px;
-                                width: 100%;
-                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                                margin-bottom: 10px;
-                                box-sizing: border-box;
-                            }
-
-                            button {
-                                background-color: transparent;
-                                border: none;
-                                cursor: pointer;
-                                font-size: 16px;
-                                padding: 5px 10px;
-                                transition: background-color 0.3s ease;
-                            }
-
-                            button:hover {
-                                background-color: #dcdcdc;
-                                border-radius: 5px;
-                            }
-
-                            #scratchblocks-container iframe {
-                                width: 100%;
-                                height: 100%;
-                                border: none;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <nav>
-                            <button onclick="showChat()">A.I Chat</button>
-                            <button onclick="showScratchblocks()">Scratch Block Translator</button>
-                        </nav>
-                        <div id="chat-container">
-                            <div id="chat-messages"></div>
-                            <div id="input-container">
-                                <input type="text" id="chat-input" />
-                                <button id="send-button" onclick="window.sendMessage(apiKey)">Send</button>
-                            </div>
+        // Inject HTML and JavaScript into the popup window
+        this.chatPopup.document.write(`
+            <html>
+                <head>
+                    <title>Scratch A.I Chat</title>
+                    <style>
+                        body {
+                            font-family: 'Comic Sans MS', cursive, sans-serif;
+                            background-color: #f0f8ff;
+                            margin: 0;
+                            padding: 0;
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: flex-start;
+                            align-items: center;
+                        }
+    
+                        .chat-bubble {
+                            padding: 10px;
+                            margin: 10px 0;
+                            border-radius: 15px;
+                            width: 70%; /* Set a fixed width for the bubbles */
+                            word-wrap: break-word;
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                            white-space: pre-wrap;
+                            display: block;
+                        }
+    
+                        .chat-bubble img {
+                            margin-right: 10px;
+                            border-radius: 50%;
+                        }
+    
+                        .user {
+                            background-color: #ffe38d;
+                            color: #fff;
+                            align-self: flex-start;
+                        }
+    
+                        .assistant {
+                            background-color: #a0cff9;
+                            color: #333;
+                            align-self: flex-end;
+                            margin-left: auto; /* Align the assistant's bubble to the right */
+                        }
+    
+                        #chat-container, #scratchblocks-container {
+                            width: 90%;
+                            height: calc(100% - 60px);
+                            background-color: #ffffff;
+                            border: 2px solid #ccc;
+                            border-radius: 10px;
+                            padding: 15px;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                            display: none;
+                            overflow: hidden;
+                        }
+    
+                        #chat-container {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            transition: opacity 0.3s ease, visibility 0.3s ease;
+                        }
+    
+                        #chat-messages {
+                            flex-grow: 1;
+                            overflow-y: auto;
+                            margin-bottom: 10px;
+                            padding-right: 10px;
+                        }
+    
+                        #input-container {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            padding: 10px;
+                            background-color: #f4f4f4;
+                            border-radius: 10px;
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                            margin-top: 10px;
+                        }
+    
+                        #chat-input {
+                            width: 70%;
+                            padding: 10px;
+                            border: 1px solid #ccc;
+                            border-radius: 5px;
+                            margin-right: 10px;
+                            box-sizing: border-box;
+                            flex-grow: 1;
+                        }
+    
+                        #send-button {
+                            padding: 10px 20px;
+                            background-color: #ff5722;
+                            color: #fff;
+                            border: none;
+                            border-radius: 20px;
+                            cursor: pointer;
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                        }
+    
+                        nav {
+                            display: flex;
+                            justify-content: space-around;
+                            background-color: #fff0f5;
+                            padding: 15px;
+                            width: 100%;
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                            margin-bottom: 10px;
+                            box-sizing: border-box;
+                            border-radius: 10px;
+                        }
+    
+                        button {
+                            background-color: transparent;
+                            border: none;
+                            cursor: pointer;
+                            font-size: 16px;
+                            padding: 5px 10px;
+                            transition: background-color 0.3s ease;
+                            border-radius: 10px;
+                        }
+    
+                        button:hover {
+                            background-color: #ffe0b2;
+                        }
+    
+                        #scratchblocks-container iframe {
+                            width: 100%;
+                            height: 100%;
+                            border: none;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <nav>
+                        <button onclick="showChat()">A.I Chat</button>
+                        <button onclick="showScratchblocks()">Scratch Block Translator</button>
+                    </nav>
+                    <div id="chat-container">
+                        <div id="chat-messages"></div>
+                        <div id="input-container">
+                            <input type="text" id="chat-input" />
+                            <button id="send-button" onclick="window.sendMessage(apiKey)">Send</button>
                         </div>
-
-                        <div id="scratchblocks-container">
-                            <iframe src="https://scratchblocks.github.io"></iframe>
-                        </div>
-
-                        <script>
-                            // Getting user's API Key
-                            let apiKey = prompt("Please enter API Key (leave empty if you have changed api key in the code)");
-
-                            // Function to handle Enter key press
-                            document.getElementById("chat-input").addEventListener("keyup", function (event) {
-                                if (event.key === "Enter") {
-                                    window.sendMessage(apiKey);
-                                }
-                            });
-
-                            // Function to show and hide chat and scratchblocks
-                            function showChat() {
-                                const chatContainer = document.getElementById("chat-container");
-                                const scratchblocksContainer = document.getElementById("scratchblocks-container");
-
-                                scratchblocksContainer.style.display = "none";
-                                chatContainer.style.display = "flex";
-                                chatContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px"; // 20px for margin
+                    </div>
+    
+                    <div id="scratchblocks-container">
+                        <iframe src="https://scratchblocks.github.io"></iframe>
+                    </div>
+    
+                    <script>
+                        // Getting user's API Key
+                        let apiKey = prompt("Please enter API Key (leave empty if you have changed api key in the code)");
+    
+                        // Function to handle Enter key press
+                        document.getElementById("chat-input").addEventListener("keyup", function (event) {
+                            if (event.key === "Enter") {
+                                window.sendMessage(apiKey);
                             }
-
-                            function showScratchblocks() {
-                                const chatContainer = document.getElementById("chat-container");
-                                const scratchblocksContainer = document.getElementById("scratchblocks-container");
-
-                                chatContainer.style.display = "none";
-                                scratchblocksContainer.style.display = "block";
-                                scratchblocksContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px"; // 20px for margin
+                        });
+    
+                        // Function to show and hide chat and scratchblocks
+                        function showChat() {
+                            const chatContainer = document.getElementById("chat-container");
+                            const scratchblocksContainer = document.getElementById("scratchblocks-container");
+    
+                            scratchblocksContainer.style.display = "none";
+                            chatContainer.style.display = "flex";
+                            chatContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px"; // 20px for margin
+                        }
+    
+                        function showScratchblocks() {
+                            const chatContainer = document.getElementById("chat-container");
+                            const scratchblocksContainer = document.getElementById("scratchblocks-container");
+    
+                            chatContainer.style.display = "none";
+                            scratchblocksContainer.style.display = "block";
+                            scratchblocksContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px"; // 20px for margin
+                        }
+    
+                        // Function to resize chat container to window size
+                        function resizeChatContainer() {
+                            const chatContainer = document.getElementById("chat-container");
+                            const scratchblocksContainer = document.getElementById("scratchblocks-container");
+    
+                            if (chatContainer.style.display === "flex") {
+                                chatContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px";
+                            } else if (scratchblocksContainer.style.display === "block") {
+                                scratchblocksContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px";
                             }
-
-                            // Function to resize chat container to window size
-                            function resizeChatContainer() {
-                                const chatContainer = document.getElementById("chat-container");
-                                const scratchblocksContainer = document.getElementById("scratchblocks-container");
-
-                                if (chatContainer.style.display === "flex") {
-                                    chatContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px";
-                                } else if (scratchblocksContainer.style.display === "block") {
-                                    scratchblocksContainer.style.height = (window.innerHeight - document.querySelector("nav").offsetHeight - 20) + "px";
-                                }
-                            }
-
-                            // Add event listener to resize containers when window is resized
-                            window.addEventListener("resize", resizeChatContainer);
-
-                            // Show the chat tab by default
-                            window.onload = showChat;
-                        </script>
-                    </body>
-                </html>
-            `);
+                        }
+    
+                        // Add event listener to resize containers when window is resized
+                        window.addEventListener("resize", resizeChatContainer);
+    
+                        // Show the chat tab by default
+                        window.onload = showChat;
+                    </script>
+                </body>
+            </html>
+        `);
 
 
     
@@ -437,12 +445,12 @@ class Scratch3YourExtension {
                             'Authorization': `Bearer ${apiKey}`,
                         },
                         body: JSON.stringify({
-                            model: 'gpt-3.5-turbo',
+                            model: 'gpt-4o-mini',
                             messages: [
                                 { role: 'system', content: thePrompt }, // System instructions
                                 ...prompt.map((message) => ({ role: 'user', content: message })), // User messages
                             ],
-                            max_tokens: 200,
+                            max_tokens: 400,
                         }),
                     });
             
