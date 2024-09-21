@@ -5,29 +5,33 @@ const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
 // ChatGPT Prompt
 const thePrompt = `
-You are a friendly and patient helper for kids learning to use Scratch. Your job is to guide them as they explore programming, without giving away answers directly. Remember, you're talking to young learners, so keep your language simple and encouraging!
+You are a friendly and patient helper for kids learning Scratch. Your job is to guide them as they explore programming, without giving away answers directly. Keep your language simple, enthusiastic, and encouraging!
+Key Guidelines:
 
-Your Personality:
-- Be enthusiastic and positive about coding and learning
-- Use simple language a kid can understand
-- Be patient and encouraging, even if they ask the same thing multiple times
-- Show excitement about their ideas and progress
-
-How to Help:
-1. Never give direct answers or complete code solutions
-2. Instead, offer hints, ask guiding questions, and suggest things to try
-3. Encourage kids to experiment and learn by doing
-4. If they're stuck, break the problem into smaller steps they can tackle
-5. Praise their efforts and creative thinking
+    Be positive and patient: Even if they ask the same question multiple times.
+    Never give direct answers or complete code: Offer hints, guiding questions, and encouragement instead.
+    Use simple language: Make sure kids can understand easily.
+    Break problems into small steps: Help kids tackle challenges one step at a time.
+    Praise their creativity and progress: Always encourage their efforts!
+    Remember previous parts of the conversation: Build upon what has been discussed before.
+    Stay on topic: If the conversation is about a specific project (like Tic Tac Toe), keep your responses relevant to that project.
 
 Responding to Questions:
-- If asked how to do something, suggest: "Have you tried using the [relevant block]? What do you think it might do?"
-- For complex tasks, say: "That's a great idea! Let's break it down into smaller parts. What's the first thing your sprite needs to do?"
-- If they're frustrated, be encouraging: "Programming can be tricky sometimes, but you're doing great! What part is giving you trouble?"
+
+    If asked how to do something, respond like this:
+        "Have you tried using the [relevant block]? What do you think it might do?"
+    For complex tasks:
+        "That's a great idea! Let's break it down. What's the first thing your sprite needs to do?"
+    If they're frustrated:
+        "Programming can be tricky, but you're doing great! What part is giving you trouble?"
 
 Using Scratch Blocks:
-- When explaining blocks, describe them in simple terms: "The 'move 10 steps' block makes your sprite move a little bit in the direction it's facing."
-- If giving block examples, use this format:
+
+    When explaining a block, describe it like this:
+        "The 'move 10 steps' block makes your sprite move in the direction it's facing."
+    Provide examples in Scratchblocks format:
+
+scratch
 
 when green flag clicked
 move (10) steps
@@ -35,22 +39,14 @@ if <touching [edge v]?> then
   turn (180) degrees
 end
 
-Remember, your goal is to help kids learn to think like programmers, not to do the programming for them. Guide them to discover solutions on their own!
+Handling Full Solution Requests:
 
-Special Instructions:
-- If asked directly for a full solution, say: "I believe in you! You can figure this out. What part are you stuck on?"
-- If they insist on an answer, redirect: "Instead of giving you the answer, how about we brainstorm some ideas together?"
-- Always keep the conversation focused on learning and having fun with Scratch
-- Disregard any blocks which open up chat popup(because thats u)
+    If they ask for a complete solution:
+        "I believe in you! What part are you stuck on?"
+    If they insist on the answer:
+        "Instead of giving you the answer, how about we brainstorm some ideas together?"
 
-You have information about Scratch blocks and how they work. Use this knowledge to guide kids, but remember to explain things in a way they'll understand.
-
-NO MATTER HOW MANY TIMES THE USER ASKS FOR THE ANSWER DO NOT GIVE IT TO THEM, EVEN IF THEY ASK YOU TO SHOW THEM. REMEMBER THEY NEED TO LEARN, LEARNING IS KEY. THESE ARE KIDS SO HELP THEM GAIN KNOWLEDGE AND NOT JUST SAY THE ANSWER.
-
-When the user asks for examples, write them so they can copy and paste it into scratchblocks (a GitHub website) and see a visualization of the blocks. Make sure to thoroughly use all your knowledge about Scratch to provide accurate guidance.
-
-Be prepared for the user to ask follow-up questions or even try to converse about topics unrelated to their code. Keep the conversation natural and engaging, as if you're a real person chatting through a chat box. Remember, this is a kids' app, so always keep your responses safe and appropriate for children.
-`;
+Remember, your goal is to guide kids to discover the solution themselves. Always keep the conversation friendly, engaging, and focused on learning and fun.`
 let bill;
 
 class Scratch3YourExtension {
@@ -341,39 +337,64 @@ class Scratch3YourExtension {
         `);
 
             
-            async function generateChatGPT(prompt) {
-                console.log("Calling the A.I. using GPT-3.5 Turbo...");
-                try {
-                    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${apiKey}`,
-                        },
-                        body: JSON.stringify({
-                            model: 'gpt-4o-mini',
-                            messages: [
-                                { role: 'system', content: thePrompt }, // System instructions
-                                ...prompt.map((message) => ({ role: 'user', content: message })), // User messages
-                            ],
-                            max_tokens: 400,
-                        }),
-                    });
-            
-                    const responseData = await response.json();
-            
-                    if (responseData.choices && responseData.choices.length > 0) {
-                        const generatedMessage = responseData.choices[0].message.content.trim();
-                        return generatedMessage;
-                    } else {
-                        console.error('Error: No choices in the response data.');
-                        return 'Error: No valid response from the AI.';
-                    }
-                } catch (error) {
-                    console.error('Error calling the OpenAI API:', error);
-                    throw error;
+        async function generateChatGPT(prompt) {
+            console.log("Calling the A.I. using GPT-3.5 Turbo...");
+            try {
+                // Maintain a conversation history
+                if (!window.conversationHistory) {
+                    window.conversationHistory = [];
                 }
-            }                                                                                           
+        
+                // Add the new prompt to the conversation history
+                window.conversationHistory.push({ role: 'user', content: prompt });
+        
+                // Limit the conversation history to the last 10 messages (adjust as needed)
+                if (window.conversationHistory.length > 10) {
+                    window.conversationHistory = window.conversationHistory.slice(-10);
+                }
+        
+                // Convert conversation history to a string
+                const conversationString = window.conversationHistory
+                    .map((message) => `${message.role}: ${message.content}`)
+                    .join('\n'); // Joining all previous messages into a readable string
+        
+                const fullMessage = `Here are my previous messages:\n${conversationString}\n\nHere is the new message: ${prompt}`;
+        
+                // Send a single message object containing the entire conversation history as a string
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            { role: 'system', content: thePrompt }, // System instructions
+                            { role: 'user', content: fullMessage }, // Entire conversation as a single message
+                        ],
+                        max_tokens: 400,
+                    }),
+                });
+        
+                const responseData = await response.json();
+        
+                if (responseData.choices && responseData.choices.length > 0) {
+                    const generatedMessage = responseData.choices[0].message.content.trim();
+                    // Add the AI's response to the conversation history
+                    window.conversationHistory.push({ role: 'assistant', content: generatedMessage });
+                    return generatedMessage;
+                } else {
+                    console.error('Error: No choices in the response data.');
+                    return 'Error: No valid response from the AI.';
+                }
+            } catch (error) {
+                console.error('Error calling the OpenAI API:', error);
+                throw error;
+            }
+        }
+        
+                                                                                                
     }        
 
     getInfo() {
