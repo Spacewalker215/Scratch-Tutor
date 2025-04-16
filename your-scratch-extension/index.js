@@ -1,6 +1,5 @@
 // Requirements for the program
 require('regenerator-runtime/runtime'); // Code doesn't work without this
-// REMOVED: const fetch = require('node-fetch'); // Don't need this for browser's fetch
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const TargetType = require('../../extension-support/target-type');
