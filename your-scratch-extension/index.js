@@ -166,7 +166,7 @@ class Scratch3YourExtension {
             chatMessages.innerHTML += `
                 <div class="chat-bubble user">
                     <img src="${ICONS.user}" alt="User">
-                    <div class="bubble-content"><span>${userMessage.replace(/</g, "<").replace(/>/g, ">")}</span></div>
+                    <div class="bubble-content"><span>${userMessage.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span></div>
                 </div>`; // Basic escaping for user input
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -189,7 +189,7 @@ class Scratch3YourExtension {
 
                 // Process response into paragraphs
                 // Basic escaping for AI response before adding tags - prevents simple HTML injection
-                const escapedResponse = response.replace(/</g, "<").replace(/>/g, ">");
+                const escapedResponse = response.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 let responseLines = escapedResponse.split('\n').map(line => `<p>${line || ' '}</p>`).join('');
 
                 // ** Add Assistant Response **
@@ -210,7 +210,7 @@ class Scratch3YourExtension {
                 chatMessages.innerHTML += `
                     <div class="chat-bubble assistant error">
                         <img src="${ICONS.error}" alt="Error">
-                        <div class="bubble-content"><span>Sorry, something went wrong: ${error.message}</span></div>
+                        <div class="bubble-content"><span>Sorry, something went wrong: ${error.message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span></div>
                     </div>`;
                  chatMessages.scrollTop = chatMessages.scrollHeight;
             } finally {
@@ -379,7 +379,7 @@ class Scratch3YourExtension {
                              const iconUrl = ICONS[iconType] || ICONS.assistant;
                              const altText = iconType.charAt(0).toUpperCase() + iconType.slice(1);
                              // Basic HTML escaping for the text before putting it in span
-                             const escapedText = text.replace(/</g, "<").replace(/>/g, ">");
+                             const escapedText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
                              chatMessages.innerHTML += \`
                                 <div class="chat-bubble \${bubbleClass}">

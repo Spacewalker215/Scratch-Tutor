@@ -1,3 +1,29 @@
+# Dependencies
+node_modules/
+dependencies/node_modules/
+
+# Environment / secrets
+.env
+.env.*
+
+# Claude Code
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build output
+dist/
+*.log
+npm-debug.log*
+
+# Scratch patches (generated)
 scratch-gui.patch
 scratch-vm.patch
-.env
